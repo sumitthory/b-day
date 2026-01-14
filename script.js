@@ -304,54 +304,63 @@ showPage = function(i){
 };
 
 /* ===== Blow to Blow Candles ===== */
+/* ===== Candle Blow + Click Safe System ===== */
+
+let micStarted = false;
 let blowActive = false;
 let audioContext, analyser, mic;
 
-function startBlowDetection(){
-  if(blowActive) return;
-  blowActive = true;
+const cake = document.querySelector(".cake-gif");
+
+/* User clicks cake = allow mic */
+cake.addEventListener("click", e => {
+  e.stopPropagation();
+
+  if (!micStarted) {
+    startMic();
+  } else {
+    // Laptop fallback: click opens wish
+    openWishCard(e);
+  }
+});
+
+/* Start microphone after user click */
+function startMic() {
+  micStarted = true;
 
   navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
     mic = audioContext.createMediaStreamSource(stream);
     analyser = audioContext.createAnalyser();
     analyser.fftSize = 1024;
     mic.connect(analyser);
 
-    const data = new Uint8Array(analyser.fftSize);
-    let blowFrames = 0;
-
-    function listen(){
-      if(!blowActive){
-        requestAnimationFrame(listen);
-        return;
-      }
-      analyser.getByteTimeDomainData(data);
-
-      let sum = 0;
-      for(let i = 0; i < data.length; i++){
-        sum += Math.abs(data[i] - 128);
-      }
-
-      /* 🎯 Natural blow detection */
-      if(sum>700){
-        blowFrames++;
-        if(blowFrames>10){
-          blowActive = false;
-
-          openWishCard(new Event("click"));
-          return;
-        }
-      } else {
-        blowFrames = 0; // reset if no continuous blow
-      }
-
-      requestAnimationFrame(listen);
-    }
-
-    listen();
+    blowActive = true;
+    listenForBlow();
+  }).catch(()=>{
+    // Mic denied → fallback to click mode
+    blowActive = false;
   });
+}
+
+function listenForBlow(){
+  if(!blowActive) return;
+
+  const data = new Uint8Array(analyser.fftSize);
+  analyser.getByteTimeDomainData(data);
+
+  let sum = 0;
+  for(let i=0;i<data.length;i++){
+    sum += Math.abs(data[i] - 128);
+  }
+
+  if(sum > 900){   // natural blowing
+    blowActive = false;
+    openWishCard(new Event("click"));
+    return;
+  }
+
+  requestAnimationFrame(listenForBlow);
 }
 
 /* Activate when Cake Page opens */
@@ -387,6 +396,7 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
 
 
