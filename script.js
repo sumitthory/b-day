@@ -207,11 +207,6 @@ function goWhatsApp(){
   window.__sendTarget = "whatsapp";
 }
 
-function goInstagram(){
-  document.getElementById("gatewayPopup").classList.remove("hidden");
-  window.__sendTarget = "instagram";
-}
-
 function sendViaWhatsApp(){
   document.getElementById("gatewayPopup").classList.add("hidden");
 
@@ -235,19 +230,6 @@ Rating: ${rating}/5
     "_blank"
   );
 }
-
-function sendViaInstagram(){
-  document.getElementById("gatewayPopup").classList.add("hidden");
-
-  const insta = "sumit__thory";   // your Instagram
-
-  window.open(
-    `https://instagram.com/${insta}`,
-    "_blank"
-  );
-}
-
-
 
 /**************** MOBILE TAP FIX ****************/
 let lastTouch = 0;
@@ -402,4 +384,5 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
