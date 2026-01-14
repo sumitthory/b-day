@@ -335,7 +335,7 @@ function startBlowDetection(){
       }
 
       /* 🎯 Natural blow detection */
-      if(sum>1500){
+      if(sum>700){
         blowFrames++;
         if(blowFrames>10){
           blowActive = false;
@@ -387,6 +387,7 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
 
 
