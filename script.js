@@ -216,7 +216,7 @@ function sendViaWhatsApp(){
   const rating = secretRating || "Not given";
   const gift = selectedGift || "Surprise";
 
-  const msg =🎁 Return Gift Received
+  const msg =`🎁 Return Gift Received 💖
 
 Gift: ${gift}
 Wish: ${wish}
@@ -395,6 +395,7 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
 
 
