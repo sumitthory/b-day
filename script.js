@@ -366,15 +366,18 @@ function listenForBlow(){
 /* 🎵 Stop playlist when leaving music page */
 let lastPage = 0;
 
-const _finalShowPage = showPage;
+const __showPage = showPage;
 showPage = function(i){
-  // If leaving music page (3), stop playlist
+
+  // Stop playlist when leaving music page (page 3)
   if(lastPage === 3 && i !== 3 && typeof player !== "undefined"){
     player.pause();
     player.currentTime = 0;
   }
 
-  _finalShowPage(i);
+  __showPage(i);
   lastPage = i;
 };
+
+
 
