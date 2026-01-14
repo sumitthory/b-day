@@ -1,6 +1,7 @@
 /**************** GLOBAL STATE ****************/
 let secretWish = "";
 let secretRating = 0;
+let selectedGift = "";
 let floatingTimer = null;
 let giftRemoved = false;
 let giftOpened = false;
@@ -196,6 +197,11 @@ function rate(n){
 }
 
 /**************** GATEWAY ****************/
+function selectGift(gift){
+  selectedGift = gift;
+  document.getElementById("gatewayPopup").classList.remove("hidden");
+}
+
 function goWhatsApp(){
   document.getElementById("gatewayPopup").classList.remove("hidden");
   window.__sendTarget = "whatsapp";
@@ -209,13 +215,20 @@ function goInstagram(){
 function sendViaWhatsApp(){
   document.getElementById("gatewayPopup").classList.add("hidden");
 
-  const phone = "917231877273";   // 🔴 Put your number (India = 91)
-  
-  const msg =
-`🎁 Someone completed your birthday surprise 💖
+  const phone = "917231877273";   // your number
 
-They saw all your memories, music, cake and gifts 🎂
-and wanted to reach you ✨`;
+  const wish = secretWish || "Not written";
+  const rating = secretRating || "Not given";
+  const gift = selectedGift || "Surprise";
+
+  const msg =
+`🎁 Return Gift Received
+
+Gift: ${gift}
+Wish: ${wish}
+Rating: ${rating}/5
+
+— Someone special 💖`;
 
   window.open(
     `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
@@ -226,13 +239,14 @@ and wanted to reach you ✨`;
 function sendViaInstagram(){
   document.getElementById("gatewayPopup").classList.add("hidden");
 
-  const insta = "sumit__thory";   // 🔴 Your Instagram username
+  const insta = "sumit__thory";   // your Instagram
 
   window.open(
     `https://instagram.com/${insta}`,
     "_blank"
   );
 }
+
 
 
 /**************** MOBILE TAP FIX ****************/
@@ -388,3 +402,4 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
