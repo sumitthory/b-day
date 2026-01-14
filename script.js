@@ -323,8 +323,10 @@ function startBlowDetection(){
     let blowFrames = 0;
 
     function listen(){
-      if(!blowActive) return;
-
+      if(!blowActive){
+        requestAnimationFrame(listen);
+        return;
+      }
       analyser.getByteTimeDomainData(data);
 
       let sum = 0;
@@ -385,6 +387,7 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
 
 
