@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <!-- ✅ MOBILE SUPPORT (ADDED) -->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+<meta charset="UTF-8">
+<title>For My Favorite Human ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- Gateway -->
+<div id="gatewayPopup" class="gateway hidden">
+  <div class="gateway-box">
+    <h3>Send via 💖</h3>
+    <button onclick="sendViaWhatsApp()">💬 WhatsApp</button>
+    <button onclick="sendViaInstagram()">📸 Instagram</button>
+  </div>
+</div>
+
+<div id="effects"></div>
+
+<!-- PAGE 1 -->
+<div class="page active">
+  <h1>POV : It’s a special day of a baddie 😎</h1>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <div class="letter">
+    <h2>A Little Note 💌</h2>
+    <p class="type-text" data-text="Today the world celebrates its favorite baddie.<br>Happy birthday,To you legend!<br>To the queen of inside jokes. Here's to another year of adventures."></p>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+  <h2>Click on cards to know what I think about you</h2>
+  <div class="flip-wrap">
+    <div class="flip-card" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/download (1).gif"></div>
+        <div class="flip-back">Sabse badi goli-baaz, kisi ko bhi goli de sakti hai aur kisi ke bhi maze le sakti hai.</div>
+      </div>
+    </div>
+
+    <div class="flip-card" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/download.gif"></div>
+        <div class="flip-back">Confident and motivated but less use of brain.(beauty with less brain and fighting skills)</div>
+      </div>
+    </div>
+
+    <div class="flip-card" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/download.jpg"></div>
+        <div class="flip-back">Always ready to fight full jat budhi😆</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page">
+
+  <h2>A Dedicated Playlist For You 💖</h2>
+  <p class="subtitle">I hope you'll like it (use headphone )</p>
+
+  <!-- Player -->
+  <div class="mini-player" onclick="event.stopPropagation()">
+    <img id="nowImg" src="assets/music1.jpg">
+    <div class="mini-info">
+      <div id="nowTitle">Tap a song 💕</div>
+      <input type="range" id="seekBar" value="0" min="0" max="100">
+    </div>
+    <button id="playBtn" onclick="togglePlay()">▶️</button>
+  </div>
+
+  <!-- Songs -->
+  <div class="song-row">
+    <div class="song-card" onclick="playSong(0)">
+      <img src="assets/music1.jpg">
+      <p>Song One</p>
+    </div>
+
+    <div class="song-card" onclick="playSong(1)">
+      <img src="assets/music2.jpg">
+      <p>Song Two</p>
+    </div>
+
+    <div class="song-card" onclick="playSong(2)">
+      <img src="assets/music3.jpg">
+      <p>Song Three</p>
+    </div>
+  </div>
+
+  <audio id="player"></audio>
+</div>
+
+<!-- PAGE 5 : CAKE -->
+<div class="page">
+
+  <!-- Romantic text -->
+  <h2 class="cake-title">Make a Wish ✨</h2>
+  <p class="cake-subtitle">Blow the candle to make it come true 💖</p>
+
+  <div class="cake-gif" onclick="enableMicAndBlow(event)">
+    <img src="assets/cake.gif">
+  </div>
+
+  <!-- Blow hint -->
+  <div id="blowHint">💨 Blow on the candle</div>
+
+  <audio id="birthdaySong" src="assets/happy-birthday.mp3"></audio>
+
+  <div class="wishCard hidden" onclick="event.stopPropagation()">
+    <h3>✨ Make a Wish ✨</h3>
+    <textarea id="wishInput" placeholder="Write your wish here..."></textarea>
+    <button onclick="sealWishUI(event)">Seal My Wish 💖</button>
+  </div>
+
+</div>
+
+<!-- PAGE 6 : GIFT -->
+<div class="page">
+  <h2>A Little Surprise For You 💝</h2>
+
+  <div class="gift-3d" onclick="openGift(event)">
+    <div class="gift-lid"></div>
+    <div class="gift-box"></div>
+    <div class="gift-ribbon"></div>
+  </div>
+
+  <div class="surprise-content">
+    <div class="surprise-top">
+      <video src="videos/memory1.mp4" muted loop></video>
+      <video src="videos/memory2.mp4" muted loop></video>
+    </div>
+    <div class="surprise-bottom">
+      <img src="assets/person1.jpg">
+      <img src="assets/person2.jpg">
+      <img src="assets/person3.jpg">
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 7 -->
+<div class="page">
+  <div class="letter">
+    <h2>Final Thought ⭐</h2>
+    <p class="type-text"
+       data-text="To the girl who has beauty, bravery, and a little bit of crazy — may Hanumanji always give you the strength to fight every problem, the courage to stand for yourself, and the power to chase your dreams without fear. You’re strong, fearless, and honestly… a little goli-baaz too 😄 But that’s what makes you special. May your life be full of laughter, love, and victory in every battle you face. Happy Birthday to our favorite baddie — may Hanumanji always have your back.  And I wish that you will soon fall in love with the girl who always watches you and says ‘hi.’">
+    </p>
+  </div>
+</div>
+
+
+<!-- PAGE 8 -->
+<div class="page">
+  <h2>Rate This Experience 💖</h2>
+  <div class="review-hearts">
+    <span onclick="rate(1)">💖</span>
+    <span onclick="rate(2)">💖</span>
+    <span onclick="rate(3)">💖</span>
+    <span onclick="rate(4)">💖</span>
+    <span onclick="rate(5)">💖</span>
+  </div>
+</div>
+
+<!-- PAGE 9 -->
+<div class="page">
+  <h2>मेरी मेहनत का फल Return Gift 🎁</h2>
+  <div class="return-gifts">
+    <button onclick="goWhatsApp()">6000 Phonepay</button>
+    <button onclick="goInstagram()">Milke btaugi</button>
+    <button onclick="goWhatsApp()">🍫 Badi wali</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
