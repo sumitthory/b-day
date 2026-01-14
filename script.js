@@ -216,14 +216,13 @@ function sendViaWhatsApp(){
   const rating = secretRating || "Not given";
   const gift = selectedGift || "Surprise";
 
-  const msg =
-`🎁 Return Gift Received
+  const msg ='🎁 Return Gift Received
 
 Gift: ${gift}
 Wish: ${wish}
 Rating: ${rating}/5
 
-— Someone special 💖`;
+— NEHA POONIA 💖`;
 
   window.open(
     `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
@@ -396,6 +395,7 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
 
 
