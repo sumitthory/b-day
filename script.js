@@ -3,10 +3,9 @@ let secretWish = "";
 let secretRating = 0;
 let selectedGift = "";
 let floatingTimer = null;
-let giftRemoved = false;
 let giftOpened = false;
 
-/**************** PAGE LOGIC (UNCHANGED) ****************/
+/**************** PAGE LOGIC ****************/
 let current = 0;
 const pages = document.querySelectorAll(".page");
 
@@ -21,25 +20,37 @@ function showPage(i){
   pages[i].classList.add("active");
   current = i;
 
-  /* 🎂 Cake page dark mode */
+  // 🎂 Cake dark mode
   if(i === 4){
     pages[i].classList.add("cake-dark");
   }
 
-  /* 🎵 Birthday song control */
+  // 🎵 Birthday song
   const cakeSong = document.getElementById("birthdaySong");
   if(cakeSong){
-    if(i === 4 ){
-      if(cakeSong.paused) cakeSong.play();
+    if(i === 4){
+      if(cakeSong.paused) cakeSong.play().catch(()=>{});
     } else {
       cakeSong.pause();
       cakeSong.currentTime = 0;
     }
   }
 
+  // 🎵 Stop playlist when leaving music page
+  if(i !== 3 && player){
+    player.pause();
+    player.currentTime = 0;
+  }
+
   updateGiftVisibility();
   stopFloating();
   handleFloating(i);
+
+  // typing
+  document.querySelectorAll(".page.active .type-text").forEach(typeEffect);
+
+  // enable cake click when cake page
+  if(i === 4) enableCakeClick();
 }
 showPage(0);
 
@@ -47,20 +58,7 @@ pages.forEach(p=>{
   p.addEventListener("click",e=>{
     if(
       e.target.closest(
-        ".flip-card," +
-        ".music-card," +
-        ".song-card," +
-        ".mini-player," +
-        "#seekBar," +
-        ".wishCard," +
-        ".cake-gif," +
-        ".gift-3d," +
-        ".review-hearts," +
-        ".return-gifts," +
-        ".gateway," +
-        "button," +
-        "video," +
-        "input"
+        ".flip-card,.song-card,.mini-player,#seekBar,.wishCard,.cake-gif,.gift-3d,.review-hearts,.return-gifts,.gateway,button,video,input"
       )
     ) return;
 
@@ -68,12 +66,11 @@ pages.forEach(p=>{
   });
 });
 
-/**************** FLOATING (USING YOUR LOGIC) ****************/
+/**************** FLOATING ****************/
 function handleFloating(i){
   if(!(i===0 || i===1 || i===5)) return;
   floatingTimer = setInterval(createFloating,1200);
 }
-
 function createFloating(){
   const el = document.createElement("div");
   el.className="effect";
@@ -83,14 +80,12 @@ function createFloating(){
   document.getElementById("effects").appendChild(el);
 
   el.animate(
-    [{transform:"translateY(0)",opacity:1},
-     {transform:"translateY(-350px)",opacity:0}],
+    [{transform:"translateY(0)",opacity:1},{transform:"translateY(-350px)",opacity:0}],
     {duration:6000,easing:"ease-out"}
   );
 
   setTimeout(()=>el.remove(),6000);
 }
-
 function stopFloating(){
   clearInterval(floatingTimer);
   document.querySelectorAll("#effects .effect").forEach(e=>e.remove());
@@ -102,18 +97,14 @@ function flipCard(card){ card.classList.toggle("flipped"); }
 /**************** MUSIC ****************/
 const songs=["assets/song1.mp3","assets/song2.mp3","assets/song3.mp3"];
 const player=document.getElementById("player");
+
 function playSong(i){
   player.src = songs[i];
-  player.load();              // 👈 force reload
-  player.play().catch(()=>{}); // 👈 prevent mobile blocking
+  player.load();
+  player.play().catch(()=>{});
 }
 
-/**************** CAKE + WISH CARD ****************/
-function cutCake(e){
-  e.stopPropagation();
-  cakeBurst();
-}
-
+/**************** CAKE ****************/
 function cakeBurst(){
   for(let i=0;i<25;i++){
     const el=document.createElement("div");
@@ -152,11 +143,7 @@ function updateGiftVisibility(){
   if(!content) return;
 
   if(current === 5){
-    if(giftOpened){
-      content.style.display = "flex";
-    } else {
-      content.style.display = "none";
-    }
+    content.style.display = giftOpened ? "flex" : "none";
   } else {
     content.style.display = "none";
     content.querySelectorAll("video").forEach(v=>{
@@ -183,9 +170,7 @@ function openGift(e){
   });
 
   setTimeout(()=>{
-    if(gift && gift.parentNode){
-      gift.parentNode.removeChild(gift);
-    }
+    if(gift && gift.parentNode) gift.parentNode.removeChild(gift);
   },900);
 }
 
@@ -201,44 +186,25 @@ function selectGift(gift){
   selectedGift = gift;
   document.getElementById("gatewayPopup").classList.remove("hidden");
 }
-
 function goWhatsApp(){
   document.getElementById("gatewayPopup").classList.remove("hidden");
-  window.__sendTarget = "whatsapp";
 }
-
 function sendViaWhatsApp(){
   document.getElementById("gatewayPopup").classList.add("hidden");
 
-  const phone = "917231877273";   // your number
-
-  const wish = secretWish || "Not written";
-  const rating = secretRating || "Not given";
-  const gift = selectedGift || "Surprise";
-
+  const phone = "917231877273";
   const msg =`🎁 Return Gift Received 💖
 
-Gift: ${gift}
-Wish: ${wish}
-Rating: ${rating}/5
+Gift: ${selectedGift||"Surprise"}
+Wish: ${secretWish||"Not written"}
+Rating: ${secretRating||"Not given"}/5
 
 — NEHA POONIA 💖`;
 
-  window.open(
-    `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
-    "_blank"
-  );
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,"_blank");
 }
 
-/**************** MOBILE TAP FIX ****************/
-let lastTouch = 0;
-document.addEventListener("touchend", function(e){
-  const now = Date.now();
-  if(now - lastTouch < 350) e.preventDefault();
-  lastTouch = now;
-});
-
-/**************** MUSIC PLAYER CONTROLS ****************/
+/**************** MUSIC PLAYER UI ****************/
 let currentSongIndex = 0;
 const songNames = ["Song One","Song Two","Song Three"];
 const songImages = ["assets/music1.jpg","assets/music2.jpg","assets/music3.jpg"];
@@ -258,13 +224,8 @@ playSong = function(i){
 };
 
 function togglePlay(){
-  if(player.paused){
-    player.play();
-    playBtn.textContent="⏸";
-  }else{
-    player.pause();
-    playBtn.textContent="▶️";
-  }
+  if(player.paused){ player.play(); playBtn.textContent="⏸"; }
+  else{ player.pause(); playBtn.textContent="▶️"; }
 }
 
 player.addEventListener("timeupdate",()=>{
@@ -277,136 +238,62 @@ seekBar.addEventListener("input",()=>{
     player.currentTime = (seekBar.value/100)*player.duration;
   }
 });
-/* ===== Typing Effect Engine ===== */
-const typed = new Set();
 
+/**************** TYPING ****************/
+const typed = new Set();
 function typeEffect(el){
   if(typed.has(el)) return;
   typed.add(el);
-
   const html = el.dataset.text;
-  let i = 0;
-  el.innerHTML = "";
-
-  const interval = setInterval(()=>{
-    el.innerHTML = html.slice(0,i+1);
+  let i=0;
+  el.innerHTML="";
+  const interval=setInterval(()=>{
+    el.innerHTML=html.slice(0,i+1);
     i++;
-    if(i >= html.length) clearInterval(interval);
-  }, 150);
+    if(i>=html.length) clearInterval(interval);
+  },150);
 }
 
-/* Hook into page change */
-const oldShowPage = showPage;
-showPage = function(i){
-  oldShowPage(i);
-  document.querySelectorAll(".page.active .type-text").forEach(typeEffect);
-};
-
-/* ===== Blow to Blow Candles ===== */
-/* ===== Candle Blow + Click Safe System ===== */
-
-let micStarted = false;
-let blowActive = false;
+/**************** 🎤 MIC + CLICK CANDLE ****************/
+let micStarted=false;
+let blowActive=false;
 let audioContext, analyser, mic;
 
-const cake = document.querySelector(".cake-gif");
+function enableCakeClick(){
+  const cake=document.querySelector(".cake-gif");
+  if(!cake || cake.dataset.bound) return;
+  cake.dataset.bound="1";
 
-/* User clicks cake = allow mic */
-cake.addEventListener("click", e => {
-  e.stopPropagation();
-
-  if (!micStarted) {
-    startMic();
-  } else {
-    // Laptop fallback: click opens wish
-    openWishCard(e);
-  }
-});
-
-/* Start microphone after user click */
-function startMic() {
-  micStarted = true;
-
-  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    mic = audioContext.createMediaStreamSource(stream);
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 1024;
-    mic.connect(analyser);
-
-    blowActive = true;
-    listenForBlow();
-  }).catch(()=>{
-    // Mic denied → fallback to click mode
-    blowActive = false;
+  cake.addEventListener("click",e=>{
+    e.stopPropagation();
+    if(!micStarted) startMic();
+    else openWishCard(e);
   });
+}
+
+function startMic(){
+  micStarted=true;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    audioContext=new (window.AudioContext||window.webkitAudioContext)();
+    mic=audioContext.createMediaStreamSource(stream);
+    analyser=audioContext.createAnalyser();
+    analyser.fftSize=1024;
+    mic.connect(analyser);
+    blowActive=true;
+    listenForBlow();
+  }).catch(()=>{});
 }
 
 function listenForBlow(){
   if(!blowActive) return;
-
-  const data = new Uint8Array(analyser.fftSize);
+  const data=new Uint8Array(analyser.fftSize);
   analyser.getByteTimeDomainData(data);
-
-  let sum = 0;
-  for(let i=0;i<data.length;i++){
-    sum += Math.abs(data[i] - 128);
-  }
-
-  if(sum > 900){   // natural blowing
-    blowActive = false;
+  let sum=0;
+  for(let i=0;i<data.length;i++) sum+=Math.abs(data[i]-128);
+  if(sum>900){
+    blowActive=false;
     openWishCard(new Event("click"));
     return;
   }
-
   requestAnimationFrame(listenForBlow);
 }
-
-/* Activate when Cake Page opens */
-const oldShowPage2 = showPage;
-
-showPage = function(i){
-  oldShowPage2(i);
-
-  const hint = document.getElementById("blowHint");
-
-  if(i === 4){   // Cake Page
-    startBlowDetection();
-    if(hint){
-      hint.style.display = "block";
-      hint.innerText = "💨 Blow on the candle";
-    }
-  } else {
-    blowActive = false;
-    if(hint) hint.style.display = "none";
-  }
-};
-/* 🎵 Stop playlist when leaving music page */
-let lastPage = 0;
-
-const _finalShowPage = showPage;
-showPage = function(i){
-  // If leaving music page (3), stop playlist
-  if(lastPage === 3 && i !== 3 && typeof player !== "undefined"){
-    player.pause();
-    player.currentTime = 0;
-  }
-
-  _finalShowPage(i);
-  lastPage = i;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
