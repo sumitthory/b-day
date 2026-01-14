@@ -333,7 +333,7 @@ function startBlowDetection(){
       }
 
       /* 🎯 Natural blow detection */
-      if(sum > 650){
+      if(sum > 700){
         blowFrames++;
         if(blowFrames > 10){   // ~0.2 seconds of real blowing
           blowActive = false;
@@ -385,6 +385,7 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
 
 
