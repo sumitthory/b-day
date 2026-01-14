@@ -333,7 +333,7 @@ function startBlowDetection(){
       }
 
       /* 🎯 Natural blow detection */
-      const sensitivity = 1200;   // laptop noise safe
+      const sensitivity = 1500;   // laptop noise safe
 const peak = 2500;         // real blow spike
 
 if(sum > sensitivity){
@@ -390,6 +390,7 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
 
 
