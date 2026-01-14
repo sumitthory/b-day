@@ -316,11 +316,14 @@ function startBlowDetection(){
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
     mic = audioContext.createMediaStreamSource(stream);
     analyser = audioContext.createAnalyser();
-    analyser.fftSize = 1024;
+    analyser.fftSize = 2048;     // higher resolution
     mic.connect(analyser);
 
     const data = new Uint8Array(analyser.fftSize);
-    let blowFrames = 0;
+
+    let blowFrames = 0;   // phone loudness
+    let last = 0;        // laptop air pressure
+    let airBursts = 0;
 
     function listen(){
       if(!blowActive) return;
@@ -332,17 +335,29 @@ function startBlowDetection(){
         sum += Math.abs(data[i] - 128);
       }
 
-      /* 🎯 Natural blow detection */
+      // 🔥 Laptop air-burst detection (pressure change)
+      const delta = Math.abs(sum - last);
+      last = sum;
+
+      /* PHONE blowing */
       if(sum > 700){
         blowFrames++;
-        if(blowFrames > 10){   // ~0.2 seconds of real blowing
-          blowActive = false;
-
-          openWishCard(new Event("click"));
-          return;
-        }
       } else {
-        blowFrames = 0; // reset if no continuous blow
+        blowFrames = Math.max(0, blowFrames - 1);
+      }
+
+      /* LAPTOP blowing */
+      if(delta > 160){
+        airBursts++;
+      } else {
+        airBursts = Math.max(0, airBursts - 1);
+      }
+
+      /* Either method can trigger blowing */
+      if(blowFrames > 10 || airBursts > 6){
+        blowActive = false;
+        openWishCard(new Event("click"));
+        return;
       }
 
       requestAnimationFrame(listen);
@@ -351,6 +366,7 @@ function startBlowDetection(){
     listen();
   });
 }
+
 /* Activate when Cake Page opens */
 const oldShowPage2 = showPage;
 
@@ -384,5 +400,6 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
 
 
