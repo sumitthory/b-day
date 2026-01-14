@@ -362,25 +362,7 @@ function listenForBlow(){
   requestAnimationFrame(listenForBlow);
 }
 
-/* Activate when Cake Page opens */
-const oldShowPage2 = showPage;
 
-showPage = function(i){
-  oldShowPage2(i);
-
-  const hint = document.getElementById("blowHint");
-
-  if(i === 4){   // Cake Page
-    startBlowDetection();
-    if(hint){
-      hint.style.display = "block";
-      hint.innerText = "💨 Blow on the candle";
-    }
-  } else {
-    blowActive = false;
-    if(hint) hint.style.display = "none";
-  }
-};
 /* 🎵 Stop playlist when leaving music page */
 let lastPage = 0;
 
@@ -395,3 +377,4 @@ showPage = function(i){
   _finalShowPage(i);
   lastPage = i;
 };
+
